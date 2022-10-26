@@ -1,0 +1,16 @@
+#ifndef VOXELFEMBENCHMARK_HH
+#define VOXELFEMBENCHMARK_HH
+
+#include <MeshFEM/GlobalBenchmark.hh>
+
+#if VOXELFEM_FINE_BENCHMARK
+    struct FINE_BENCHMARK_SCOPED_TIMER_SECTION : public BENCHMARK_SCOPED_TIMER_SECTION {
+        using BENCHMARK_SCOPED_TIMER_SECTION::BENCHMARK_SCOPED_TIMER_SECTION;
+    };
+#else
+    struct FINE_BENCHMARK_SCOPED_TIMER_SECTION {
+        FINE_BENCHMARK_SCOPED_TIMER_SECTION(const std::string &) { /* NOP */ }
+    };
+#endif
+
+#endif /* end of include guard: VOXELFEMBENCHMARK_HH */

@@ -1,0 +1,37 @@
+#Builds
+build/
+build*/
+.atom-build.yml
+
+#VSCode
+.vscode
+
+#Vim
+*.swp
+*.swo
+
+#Python bindings modules
+*.so
+*.pyd
+
+#Python temp files
+python/.ipynb_checkpoints/
+python_bindings/.ipynb_checkpoints/
+__pycache__/
+python/*.obj
+python/MeshFEM/__init__.py
+
+.cache
+
+#Python virtual environments
+python/py37
+python/py37m
+
+#Windows python build files
+python/Debug/
+python/Release/
+
+#Benchmark Output files from python scripts
+python/benchmark_out
+
+*.DS_Store

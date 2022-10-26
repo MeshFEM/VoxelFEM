@@ -1,0 +1,17 @@
+if (APPLE)
+ set(BLA_VENDOR Apple)
+endif()
+find_package(BLAS)
+
+pybind11_add_module(pyVoxelFEM VoxelFEM.cc)
+set_target_properties(pyVoxelFEM PROPERTIES CXX_STANDARD 14)
+set_target_properties(pyVoxelFEM PROPERTIES CXX_STANDARD_REQUIRED ON)
+set_target_properties(pyVoxelFEM PROPERTIES LIBRARY_OUTPUT_DIRECTORY $<1:${PROJECT_SOURCE_DIR}/python>)
+target_link_libraries(pyVoxelFEM PUBLIC MeshFEM VoxelFEM intel_pybind_14_hack)#  -fsanitize=address)
+# target_compile_options(pyVoxelFEM PUBLIC -fsanitize=address)
+
+pybind11_add_module(pyOptimizer Optimizer.cc)
+set_target_properties(pyOptimizer PROPERTIES CXX_STANDARD 14)
+set_target_properties(pyOptimizer PROPERTIES CXX_STANDARD_REQUIRED ON)
+set_target_properties(pyOptimizer PROPERTIES LIBRARY_OUTPUT_DIRECTORY $<1:${PROJECT_SOURCE_DIR}/python>)
+target_link_libraries(pyOptimizer PUBLIC MeshFEM intel_pybind_14_hack)#  -fsanitize=address)
