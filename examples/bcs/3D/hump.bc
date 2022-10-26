@@ -1,0 +1,13 @@
+{
+  "regions": [
+         { "type": "dirichlet", "value": [ 0, 0, 0], "box%": { "minCorner": [0.49, -0.0001, -0.0001], "maxCorner": [0.51, 0.0001, 0.0001] } },
+         { "type": "dirichlet", "value": [ 0, 0, 0], "box%": { "minCorner": [0.49, -0.0001, 0.9999], "maxCorner": [0.51, 0.0001, 1.0001] } },
+         { "type": "dirichlet", "value": [ 0, 0, 0], "box%": { "minCorner": [-0.0001, -0.0001, 0.49], "maxCorner": [0.0001, 0.0001, 0.51] } },
+         { "type": "dirichlet", "value": [ 0, 0, 0], "box%": { "minCorner": [0.9999, -0.0001, 0.49], "maxCorner": [1.0001, 0.0001, 0.51] } },
+         { "type": "force", "value": [0, -1, 0], "box%": { "minCorner": [ 0.49, 0.9999, 0.25], "maxCorner": [0.51, 1.0001, 0.26] } },
+         { "type": "force", "value": [0, -1, 0], "box%": { "minCorner": [ 0.49, 0.9999, 0.74], "maxCorner": [0.51, 1.0001, 0.75] } },
+         { "type": "force", "value": [0, -1, 0], "box%": { "minCorner": [ 0.25, 0.9999, 0.49], "maxCorner": [0.26, 1.0001, 0.51] } },
+         { "type": "force", "value": [0, -1, 0], "box%": { "minCorner": [ 0.74, 0.9999, 0.49], "maxCorner": [0.75, 1.0001, 0.51] } },
+         { "type": "force", "value": [0, 1, 0], "box%": { "minCorner": [ 0.49, 0.49, 0.49], "maxCorner": [0.51, 0.51, 0.51] } }
+  ]
+}

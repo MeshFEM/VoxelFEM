@@ -23,13 +23,20 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 #Include MeshFem (Eigen will be included by MeshFEM)
 if (NOT TARGET MeshFEM)
     option(MESHFEM_ENABLE_BENCHMARKING "" ON)
-    if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+    if (CMAKE_BUILD_TYPE MATCHES DEBUG)
         option(MESHFEM_VECTORIZE "" OFF)
     else()
         option(MESHFEM_VECTORIZE "" ON) # Request vectorization
     endif()
     add_subdirectory(${THIRD_PARTY_DIR}/MeshFEM)
 endif()
+
+if(NOT CMAKE_BUILD_TYPE)
+    message(STATUS "No build type selected, default to RelWithAssert")
+    set(CMAKE_BUILD_TYPE "RelWithAssert")
+endif()
+
+set(CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING "Choose the type of build. Options are: None Debug Release RelWithDebInfo MinSizeRel RelWithAssert" FORCE)
 
 option(VOXELFEM_FINE_BENCHMARK "Whether to report benchmarks for the sub-components of the PCG solver." ON)
 option(VOXELFEM_DISABLE_3D     "Whether to disable the disable the 3D bindings to accelerate build times" OFF)

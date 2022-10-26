@@ -1,0 +1,60 @@
+%& -jobname=vis.pdf
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Place this file inside python/benchmark_out/notes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage[yyyymmdd,hhmmss]{datetime}
+\usepackage{pgffor}
+\pagestyle{fancy}
+\lhead{\today, \currenttime}
+
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\parindent}{0pt} 
+\renewcommand{\arraystretch}{1.5}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Change those variables to display helpful info
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\layers{32} % Set resolution (number of voxel layers)
+\def\cgs{20} % Include all CGs less than this number for each simulation
+\def\method{N=3} % Method name
+\def\enrich{none} % Enrich method name 
+\newcounter{figs}
+\setcounter{figs}{0}
+
+\begin{document}
+    \begin{center}
+        \Large Visualization Layer by Layer
+    \end{center}
+
+    \begin{table}[ht]
+        \centering
+        \begin{tabular}{p{5cm} c}
+            Method & \method \\
+            Voxel height & \layers \\
+            Enrich method& \enrich
+        \end{tabular}    
+    \end{table}
+    
+    \bigskip
+        \foreach \x in {\layers,...,1} {%
+        \foreach \y in {0, ..., \cgs} {%
+            \IfFileExists{./res_\x layers_cg\y_N=3.pdf}{%
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                % Uncomment any of the three below to generate for `residual', `displacement error' or `solution'%
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                %\includegraphics[width=0.5\textwidth]{res_\x layers_cg\y_\method.pdf}%
+                \includegraphics[width=0.5\textwidth]{disp_error_\x layers_cg\y_\method.pdf}%
+                %\includegraphics[width=0.5\textwidth]{sol_\x layers_cg\y_\method.pdf}%
+                \ifodd\thefigs{\linebreak}\else{}\fi%
+                \stepcounter{figs}%
+            }{}%
+        }
+        }  
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % The output will be `visualization.pdf', so be sure to rename it to avoid overwritting
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

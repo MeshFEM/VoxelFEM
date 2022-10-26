@@ -1,0 +1,7 @@
+{
+  "regions": [
+         { "type": "dirichlet", "value": [ 0, 0, 0], "box%": { "minCorner": [-0.0001, 0.1000, -0.0001], "maxCorner": [0.0001, 0.2000, 1.0001] } },
+         { "type": "dirichlet", "value": [ 0, 0, 0], "box%": { "minCorner": [0.2000, 0.9999, -0.0001], "maxCorner": [0.3000, 1.0001, 1.0001] } },
+         { "type": "force", "value": [0, -1, 0], "box%": { "minCorner": [ 0.9999, 0.9999, -0.0001], "maxCorner": [1.0001, 1.0001, 1.0001] } }
+  ]
+}
