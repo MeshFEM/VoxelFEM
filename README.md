@@ -31,7 +31,20 @@ sudo port install python39
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 nvm install 17 && nvm use 17
 ```
-
+If you use [homebrew](https://brew.sh/), you will need to link SuiteSparse to the Acceleration library manually. Use the command
+```bash
+brew rm suite-sparse
+brew edit suite-sparse
+```
+and then remove the following three lines:
+```rb
+depends_on "openblas"
+"BLAS=-L#{Formula["openblas"].opt_lib} -lopenblas",
+"LAPACK=$(BLAS)",
+```
+Finally you will need to run
+```brew reinstall --build-from-source suite-sparse```
+ for the changes to take effect.
 ### Ubuntu 20.04
 A few more packages need to be installed on a fresh Ubuntu 20.04 install:
 ```bash

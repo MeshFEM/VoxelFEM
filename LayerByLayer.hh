@@ -120,18 +120,12 @@ struct LayerByLayerEvaluator {
             Eigen::JacobiSVD<Eigen::MatrixXd> solver(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
             Eigen::VectorXd c = solver.solve(b);
 
-            // std::cout << "A: " << A << std::endl;
-            // std::cout << "b: " << b.transpose() << std::endl;
-            // std::cout << "c: " << c.transpose() << std::endl;
-
             g.resize(sim.numNodes(), N); // Note the `u` field referenced by `g` was invalidated by `finalize_layer`, so a new one may need to be allocated.
-            // g.setConstant(std::numeric_limits<double>::quiet_NaN()); // Uninitialized values debugging
             sim.maskedNodalVisitBlocks([&](size_t nodeStart, size_t numNodes) {
                     g    .middleRows(nodeStart, numNodes)  = c[0] * u(0).middleRows(nodeStart, numNodes);
                     for (size_t i = 1; i < s; ++i)
                         g.middleRows(nodeStart, numNodes) += c[i] * u(i).middleRows(nodeStart, numNodes);
                 });
-#if 1
             // Note: NaNs in the first layer of detached nodes will leak into the topmost
             // nondetached layer during `applyK` since 0 * NaN = NaN.
             EigenNDIndex nodeSizes = sim.nondetachedNodesPerDim();
@@ -150,7 +144,6 @@ struct LayerByLayerEvaluator {
                         g.row(n_c).setZero();
                     }, nbegin, nend);
             }
-#endif
         }
 
         virtual void finalizeLayer(size_t lbegin, size_t lend, VField &u_l, const VField &/* f */, const VField &r, Real compliance) override {
@@ -191,7 +184,6 @@ struct LayerByLayerEvaluator {
             for (size_t i = 0; i < s; ++i)
                 us.push_back(this->m_storage[i].get());
 
-#if 1
             using EigenNDIndex = typename TPS::EigenNDIndex;
             using VNd          = typename TPS::VNd;
             auto results = IndexRangeVisitorThreadLocal<N, VXd>::run([&](const EigenNDIndex &niND, VXd &out) {
@@ -200,30 +192,8 @@ struct LayerByLayerEvaluator {
                 for (size_t i = 0; i < s; ++i)
                     out[i] += r_row.dot(us[i]->row(ni));
             }, /* constructor */ [s](VXd &v) { v.setZero(s); }, EigenNDIndex::Zero().eval(), sim.nondetachedNodesPerDim());
-
-
             for (const auto &rr : results)
                 A.col(0) -= rr.v;
-#else
-#if 0       // This version is about the same as above.
-            constexpr size_t MAX_N = 8;
-            // Use a fixed-size type to avoid memory allocations in tbb::parallel_reduce
-            using UtRType = Eigen::Matrix<Real, Eigen::Dynamic, 1, Eigen::ColMajor, MAX_N, 1>;
-            if (s > MAX_N) throw std::runtime_error("N is limited to MAX_N=" + std::to_string(MAX_N));
-            A.col(0) -= sim.maskedNodalReduceSum([&](size_t nodeStart, size_t numNodes) {
-                        UtRType utr(s);
-                        for (size_t i = 0; i < s; ++i)
-                            utr[i] = r.middleRows(nodeStart, numNodes).cwiseProduct(us[i]->middleRows(nodeStart, numNodes)).sum();
-                        return utr;
-                    }, UtRType::Zero(s));
-#else       // This version appears slowest...
-            for (size_t i = 0; i < s; ++i)
-                A(i, 0) -= sim.maskedNodalDotProduct(u(i), r);
-#endif
-#endif
-
-            // for (size_t i = 0; i < s; ++i)
-            //     A(i, 0) -= dotProductParallel(u(i), r);
             BENCHMARK_STOP_TIMER_SECTION("U^T r");
 #endif
             A.bottomRightCorner(s - 1, s - 1) = A_old.topLeftCorner(s - 1, s - 1);
